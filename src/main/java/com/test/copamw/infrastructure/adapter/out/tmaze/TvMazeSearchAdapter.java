@@ -14,6 +14,8 @@ import com.test.copamw.infrastructure.adapter.out.tmaze.dto.TvMazeSearchRespDto;
 import com.test.copamw.infrastructure.adapter.out.tmaze.mapper.TvMazeShowMapper;
 import org.springframework.web.client.RestClientResponseException;
 
+import static com.test.copamw.constants.GlobalConstants.*;
+
 /**
  * Adapter responsible for communicating with the TV Maze API.
  *
@@ -47,8 +49,8 @@ public class TvMazeSearchAdapter implements TvMazeSearchPort{
             TvMazeSearchRespDto[] response = restClient
                     .get()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/search/shows")
-                            .queryParam("q", query)
+                            .path(TVMAZE_SEARCH_PATH)
+                            .queryParam(TVMAZE_QUERY_PARAM, query)
                             .build())
                     .retrieve()
                     .body(TvMazeSearchRespDto[].class);
@@ -64,7 +66,7 @@ public class TvMazeSearchAdapter implements TvMazeSearchPort{
 
         } catch (RestClientResponseException | ResourceAccessException exception) {
             throw new ServiceException(
-                    "Unable to retrieve shows from TVMaze",
+                    TVMAZE_SERVICE_ERROR,
                     exception);
         }
     }

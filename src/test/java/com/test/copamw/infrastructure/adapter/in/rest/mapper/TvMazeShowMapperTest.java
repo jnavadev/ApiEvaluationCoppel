@@ -23,7 +23,7 @@ public class TvMazeShowMapperTest {
     void shouldMapNetworkAsChannel() {
 
         TvMazeNetworkRespDto network =
-                new TvMazeNetworkRespDto(SHOW_ID, CHANNEL_ABC);
+                new TvMazeNetworkRespDto(SHOW_ID, CHANNEL_ABC, null, null);
 
         TvMazeShowRespDto source = new TvMazeShowRespDto(
                 SHOW_ID,

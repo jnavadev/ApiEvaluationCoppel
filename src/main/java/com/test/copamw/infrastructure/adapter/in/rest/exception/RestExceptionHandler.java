@@ -9,6 +9,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.test.copamw.constants.GlobalConstants.*;
+
 /**
  * Handles application exceptions and translates them into
  * consistent REST error responses.
@@ -31,8 +33,8 @@ public class RestExceptionHandler {
 
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
-                "search_query not empty");
+                BAD_REQUEST,
+                SEARCH_QUERY_EMPTY);
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -45,7 +47,7 @@ public class RestExceptionHandler {
 
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
+                BAD_REQUEST,
                 exception.getParameterName() + " not empty");
 
         return ResponseEntity
@@ -59,7 +61,7 @@ public class RestExceptionHandler {
 
         ErrorResponseDto errorResponse = new ErrorResponseDto(
                 HttpStatus.BAD_GATEWAY.value(),
-                "Bad Gateway",
+                BAD_GATEWAY,
                 exception.getMessage());
 
         return ResponseEntity
