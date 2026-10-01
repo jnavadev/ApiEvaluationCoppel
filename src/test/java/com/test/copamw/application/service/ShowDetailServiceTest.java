@@ -1,14 +1,19 @@
 package com.test.copamw.application.service;
 
+import static com.test.copamw.constants.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.test.copamw.application.exception.ServiceException;
+import com.test.copamw.domain.model.ShowComment;
+import com.test.copamw.domain.port.out.ShowCommentPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,78 +33,98 @@ class ShowDetailServiceTest {
     @Mock
     private MongoShowPort mongoShowPort;
 
+    @Mock
+    private ShowCommentPort showCommentPort;
+
     private ShowDetailService service;
 
     @BeforeEach
     void setUp() {
         service = new ShowDetailService(
                 tvMazeShowPort,
-                mongoShowPort);
+                mongoShowPort,
+                showCommentPort);
     }
+
+    List<ShowComment> comments = List.of(
+            new ShowComment(
+                    SHOW_ID,
+                    MESSAGE_MAX_RATING,
+                    RATING
+            )
+    );
 
     @Test
     void shouldReturnShowFromCacheWhenShowExistsInMongo() {
 
-        Long showId = 1L;
         ShowDetail cachedShow = new ShowDetail();
 
-        when(mongoShowPort.findById(showId))
+        when(mongoShowPort.findById(SHOW_ID))
                 .thenReturn(Optional.of(cachedShow));
+        when(showCommentPort.findByShowId(SHOW_ID))
+                .thenReturn(comments);
 
-        ShowDetail result = service.getShow(showId);
+        ShowDetail result = service.getShow(SHOW_ID);
 
         assertEquals(cachedShow, result);
+        assertEquals(comments, result.getComments());
 
-        verify(mongoShowPort).findById(showId);
-        verify(tvMazeShowPort, never()).getShow(showId);
+        verify(mongoShowPort).findById(SHOW_ID);
+        verify(tvMazeShowPort, never()).getShow(SHOW_ID);
         verify(mongoShowPort, never()).save(cachedShow);
+        verify(showCommentPort).findByShowId(SHOW_ID);
     }
 
     @Test
     void shouldGetShowFromTvMazeAndSaveWhenNotFoundInMongo() {
 
-        Long showId = 1L;
         ShowDetail showDetail = new ShowDetail();
 
-        when(mongoShowPort.findById(showId))
+
+        when(mongoShowPort.findById(SHOW_ID))
                 .thenReturn(Optional.empty());
 
-        when(tvMazeShowPort.getShow(showId))
+        when(tvMazeShowPort.getShow(SHOW_ID))
                 .thenReturn(showDetail);
 
         when(mongoShowPort.save(showDetail))
                 .thenReturn(showDetail);
 
-        ShowDetail result = service.getShow(showId);
+        when(showCommentPort.findByShowId(SHOW_ID))
+                .thenReturn(comments);
+
+        ShowDetail result = service.getShow(SHOW_ID);
 
         assertEquals(showDetail, result);
+        assertEquals(comments, result.getComments());
 
-        verify(mongoShowPort).findById(showId);
-        verify(tvMazeShowPort).getShow(showId);
+        verify(mongoShowPort).findById(SHOW_ID);
+        verify(tvMazeShowPort).getShow(SHOW_ID);
         verify(mongoShowPort).save(showDetail);
+        verify(showCommentPort).findByShowId(SHOW_ID);
     }
 
     @Test
     void shouldNotSaveShowWhenTvMazeFails() {
 
-        Long showId = 1L;
         ServiceException exception =
                 new ServiceException(
                         "TV Maze service error",
                         new RuntimeException("TV Maze unavailable"));
 
-        when(mongoShowPort.findById(showId))
+        when(mongoShowPort.findById(SHOW_ID))
                 .thenReturn(Optional.empty());
 
-        when(tvMazeShowPort.getShow(showId))
+        when(tvMazeShowPort.getShow(SHOW_ID))
                 .thenThrow(exception);
 
         assertThrows(
                 ServiceException.class,
-                () -> service.getShow(showId));
+                () -> service.getShow(SHOW_ID));
 
-        verify(mongoShowPort).findById(showId);
-        verify(tvMazeShowPort).getShow(showId);
-        verify(mongoShowPort, never()).save(org.mockito.ArgumentMatchers.any());
+        verify(mongoShowPort).findById(SHOW_ID);
+        verify(tvMazeShowPort).getShow(SHOW_ID);
+        verify(mongoShowPort, never()).save(any());
+        verify(showCommentPort, never()).findByShowId(SHOW_ID);
     }
 }

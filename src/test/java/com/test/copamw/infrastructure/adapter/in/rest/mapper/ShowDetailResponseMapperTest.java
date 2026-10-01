@@ -6,17 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.test.copamw.domain.model.*;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import com.test.copamw.domain.model.Country;
-import com.test.copamw.domain.model.Externals;
-import com.test.copamw.domain.model.Image;
-import com.test.copamw.domain.model.Network;
-import com.test.copamw.domain.model.Rating;
-import com.test.copamw.domain.model.Schedule;
-import com.test.copamw.domain.model.ShowDetail;
-import com.test.copamw.domain.model.WebChannel;
 import com.test.copamw.infrastructure.adapter.in.rest.dto.ShowDetailResponseDto;
 
 import static com.test.copamw.constants.TestConstants.*;
@@ -81,7 +74,12 @@ class ShowDetailResponseMapperTest {
                 externals,
                 image,
                 "A show summary",
-                123456789L);
+                123456789L,
+                List.of(new ShowComment(
+                        SHOW_ID,
+                        MESSAGE_MAX_RATING,
+                        RATING
+                )));
 
         ShowDetailResponseDto result = mapper.toResponse(source);
 
@@ -102,6 +100,16 @@ class ShowDetailResponseMapperTest {
         assertEquals(source.getWeight(), result.weight());
         assertEquals(source.getSummary(), result.summary());
         assertEquals(source.getUpdated(), result.updated());
+
+        assertNotNull(result.comments());
+        assertEquals(source.getComments().size(), result.comments().size());
+
+        assertEquals(
+                source.getComments().get(0).getComment(),
+                result.comments().get(0).comment());
+        assertEquals(
+                source.getComments().get(0).getRating(),
+                result.comments().get(0).rating());
 
         assertNotNull(result.schedule());
         assertEquals(

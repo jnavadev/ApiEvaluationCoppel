@@ -41,4 +41,5 @@ public class ShowDetail {
     private Image image;
     private String summary;
     private Long updated;
+    private List<ShowComment> comments;
 }

@@ -51,5 +51,6 @@ public record ShowDetailResponseDto(
         ExternalsResponseDto externals,
         ImageResponseDto image,
         String summary,
-        Long updated) {
+        Long updated,
+        List<ShowCommentResponseDto> comments) {
 }

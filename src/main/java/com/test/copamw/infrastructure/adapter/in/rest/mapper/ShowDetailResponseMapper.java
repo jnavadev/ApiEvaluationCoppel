@@ -24,4 +24,5 @@ public interface ShowDetailResponseMapper {
     CountryResponseDto toResponse(Country source);
     ExternalsResponseDto toResponse(Externals source);
     ImageResponseDto toResponse(Image source);
+    ShowCommentResponseDto toResponse(ShowComment source);
 }

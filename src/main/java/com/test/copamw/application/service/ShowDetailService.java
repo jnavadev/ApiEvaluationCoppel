@@ -2,6 +2,7 @@ package com.test.copamw.application.service;
 
 import com.test.copamw.domain.model.ShowDetail;
 import com.test.copamw.domain.port.out.MongoShowPort;
+import com.test.copamw.domain.port.out.ShowCommentPort;
 import com.test.copamw.domain.port.out.TvMazeShowPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,20 @@ public class ShowDetailService {
 
     private final TvMazeShowPort tvMazeShowPort;
     private final MongoShowPort mongoShowPort;
+    private final ShowCommentPort showCommentPort;
 
     /**
      * Creates a new show detail service.
      *
      * @param tvMazeShowPort output port used to retrieve show information
      */
-    public ShowDetailService(TvMazeShowPort tvMazeShowPort, MongoShowPort mongoShowPort) {
+    public ShowDetailService(TvMazeShowPort tvMazeShowPort,
+                             MongoShowPort mongoShowPort,
+                             ShowCommentPort showCommentPort) {
+
         this.tvMazeShowPort = tvMazeShowPort;
         this.mongoShowPort = mongoShowPort;
+        this.showCommentPort = showCommentPort;
     }
 
     /**
@@ -45,15 +51,26 @@ public class ShowDetailService {
         Optional<ShowDetail> cachedShow =
                 mongoShowPort.findById(showId);
 
+        ShowDetail showDetail;
+
         if (cachedShow.isPresent()) {
             log.info(FOUND_MONGO, showId);
-            return cachedShow.get();
+            showDetail = cachedShow.get();
+        } else {
+
+            log.info(FOUND_TVMAZE, showId);
+
+            showDetail = tvMazeShowPort.getShow(showId);
+
+            mongoShowPort.save(showDetail);
+
+            log.info(SAVE_MONGO, showId);
         }
 
         log.info(FOUND_TVMAZE, showId);
-        ShowDetail showDetail = tvMazeShowPort.getShow(showId);
-        mongoShowPort.save(showDetail);
-        log.info(SAVE_MONGO, showId);
+        showDetail.setComments(
+                showCommentPort.findByShowId(showId)
+        );
         return showDetail;
     }
 }
