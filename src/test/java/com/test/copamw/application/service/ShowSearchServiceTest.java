@@ -22,6 +22,7 @@ class ShowSearchServiceTest {
     @Mock
     private TvMazeSearchPort tvMazeSearchPort;
 
+
     private ShowSearchService showSearchService;
 
     @BeforeEach

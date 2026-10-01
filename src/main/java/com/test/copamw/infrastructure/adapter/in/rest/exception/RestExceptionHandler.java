@@ -18,6 +18,7 @@ import static com.test.copamw.constants.GlobalConstants.*;
  * <p>This class acts as the centralized exception handling mechanism
  * for the inbound REST adapter.</p>
  */
+
 @RestControllerAdvice
 public class RestExceptionHandler {
 

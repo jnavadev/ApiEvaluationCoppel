@@ -5,6 +5,9 @@ public class GlobalConstants {
     private GlobalConstants() {
     }
 
+    public static final String FOUND_TVMAZE = "Show {} not found in MongoDB. Calling TV Maze";
+    public static final String FOUND_MONGO = "Show {} found in MongoDB cache";
+    public static final String EXECUTE_SEARCH_SHOW_MESSAGE = "execute {} search Shows";
     public static final String ENDPOINT_SEARCH = "/search";
     public static final String ENDPOINT_SHOW_ID = "/{showId}";
     public static final String TVMAZE_SHOW_PATH_ID = "/shows/{showId}";
