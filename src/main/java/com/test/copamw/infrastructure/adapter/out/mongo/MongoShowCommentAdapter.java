@@ -8,6 +8,8 @@ import com.test.copamw.infrastructure.adapter.out.mongo.repository.ShowCommentMo
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static com.test.copamw.constants.GlobalConstants.SAVE_COMMENT;
 
 /**
@@ -52,5 +54,20 @@ public class MongoShowCommentAdapter implements ShowCommentPort {
                 showComment.getRating()
         );
         return mapper.toDomain(savedDocument);
+    }
+
+    /**
+     * Retrieves all comments associated with a show.
+     *
+     * @param showId TV Maze show identifier
+     * @return list of comments associated with the show
+     */
+    @Override
+    public List<ShowComment> findByShowId(Long showId) {
+        log.info("INIT Process {} list show comment by show id ", showId);
+        return repository.findByShowId(showId)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

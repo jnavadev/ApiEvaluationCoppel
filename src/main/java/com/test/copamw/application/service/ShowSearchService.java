@@ -1,6 +1,7 @@
 package com.test.copamw.application.service;
 import java.util.List;
 
+import com.test.copamw.domain.port.out.ShowCommentPort;
 import com.test.copamw.domain.port.out.TvMazeSearchPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,12 @@ import static com.test.copamw.constants.GlobalConstants.EXECUTE_SEARCH_SHOW_MESS
 public class ShowSearchService {
 
     private final TvMazeSearchPort tvMazeSearchPort;
+    private final ShowCommentPort showCommentPort;
 
-    public ShowSearchService(TvMazeSearchPort tvMazeSearchPort) {
+    public ShowSearchService(TvMazeSearchPort tvMazeSearchPort,
+                             ShowCommentPort showCommentPort) {
         this.tvMazeSearchPort = tvMazeSearchPort;
+        this.showCommentPort = showCommentPort;
     }
 
     /**
@@ -33,6 +37,12 @@ public class ShowSearchService {
      */
     public List<Show> searchShows(String query) {
         log.info(EXECUTE_SEARCH_SHOW_MESSAGE, query);
-        return tvMazeSearchPort.searchShows(query);
+        List<Show> shows = tvMazeSearchPort.searchShows(query);
+        shows.forEach(show ->
+                show.setComments(
+                        showCommentPort.findByShowId(show.getId())
+                )
+        );
+        return shows;
     }
 }

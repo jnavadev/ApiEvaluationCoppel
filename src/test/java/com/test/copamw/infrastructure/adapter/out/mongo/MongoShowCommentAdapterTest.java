@@ -14,6 +14,7 @@ import static com.test.copamw.constants.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class MongoShowCommentAdapterTest {
@@ -80,5 +81,39 @@ class MongoShowCommentAdapterTest {
         verify(mapper).toDocument(showComment);
         verify(repository).save(document);
         verify(mapper).toDomain(savedDocument);
+    }
+
+    @Test
+    void shouldFindCommentsByShowId() {
+
+        ShowCommentDocument document =
+                new ShowCommentDocument(
+                        "comment-id",
+                        SHOW_ID,
+                        MESSAGE_MAX_RATING,
+                        RATING
+                );
+
+        ShowComment expected =
+                new ShowComment(
+                        SHOW_ID,
+                        MESSAGE_MAX_RATING,
+                        RATING
+                );
+
+        when(repository.findByShowId(SHOW_ID))
+                .thenReturn(List.of(document));
+
+        when(mapper.toDomain(document))
+                .thenReturn(expected);
+
+        List<ShowComment> result =
+                adapter.findByShowId(SHOW_ID);
+
+        assertEquals(1, result.size());
+        assertEquals(expected, result.get(0));
+
+        verify(repository).findByShowId(SHOW_ID);
+        verify(mapper).toDomain(document);
     }
 }
