@@ -14,7 +14,7 @@ import static com.test.copamw.constants.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TvMazeShowMapperTest {
+class TvMazeShowMapperTest {
 
     private final TvMazeShowMapper mapper =
             Mappers.getMapper(TvMazeShowMapper.class);

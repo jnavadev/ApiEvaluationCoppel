@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.test.copamw.constants.GlobalConstants.FOUND_MONGO;
-import static com.test.copamw.constants.GlobalConstants.FOUND_TVMAZE;
+import static com.test.copamw.constants.GlobalConstants.*;
 
 /**
  * Application service responsible for retrieving detailed information
@@ -54,7 +53,7 @@ public class ShowDetailService {
         log.info(FOUND_TVMAZE, showId);
         ShowDetail showDetail = tvMazeShowPort.getShow(showId);
         mongoShowPort.save(showDetail);
-
+        log.info(SAVE_MONGO, showId);
         return showDetail;
     }
 }

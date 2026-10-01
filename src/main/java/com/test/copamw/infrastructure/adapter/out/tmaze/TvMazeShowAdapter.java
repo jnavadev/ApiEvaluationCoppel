@@ -4,9 +4,11 @@ import com.test.copamw.domain.model.ShowDetail;
 import com.test.copamw.domain.port.out.TvMazeShowPort;
 import com.test.copamw.infrastructure.adapter.out.tmaze.dto.TvMazeShowDetailRespDto;
 import com.test.copamw.infrastructure.adapter.out.tmaze.mapper.TvMazeShowDetailMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import static com.test.copamw.constants.GlobalConstants.REQUEST_SHOW;
 import static com.test.copamw.constants.GlobalConstants.TVMAZE_SHOW_PATH_ID;
 
 /**
@@ -15,6 +17,7 @@ import static com.test.copamw.constants.GlobalConstants.TVMAZE_SHOW_PATH_ID;
  * <p>This class implements the {@link TvMazeShowPort} output port and
  * isolates the domain layer from the external TV Maze API.</p>
  */
+@Slf4j
 @Component
 public class TvMazeShowAdapter implements TvMazeShowPort {
 
@@ -43,7 +46,7 @@ public class TvMazeShowAdapter implements TvMazeShowPort {
      */
     @Override
     public ShowDetail getShow(Long showId) {
-
+        log.info(REQUEST_SHOW, showId);
         TvMazeShowDetailRespDto response = restClient
                 .get()
                 .uri(TVMAZE_SHOW_PATH_ID, showId)

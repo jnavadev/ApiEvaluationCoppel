@@ -16,6 +16,7 @@ public final class TestConstants {
     public static final String GENRE_ACTION = "Action";
     public static final String GENRE_ADVENTURE = "Adventure";
     public static final Long SHOW_ID = 1L;
+    public static final Integer RATING = 5;
     public static final Long NETWORK_ID = 1L;
     public static final Long WEB_CHANNEL_ID = 2L;
     public static final String TVMAZE_ERROR_MESSAGE =
@@ -24,4 +25,5 @@ public final class TestConstants {
             "search_query not empty";
     public static final String MISSING_SEARCH_QUERY_MESSAGE =
             "search_query must not be missing";
+    public static final String MESSAGE_MAX_RATING = "Excellent show";
 }

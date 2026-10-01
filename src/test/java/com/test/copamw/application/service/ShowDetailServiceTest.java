@@ -20,7 +20,7 @@ import com.test.copamw.domain.port.out.MongoShowPort;
 import com.test.copamw.domain.port.out.TvMazeShowPort;
 
 @ExtendWith(MockitoExtension.class)
-public class ShowDetailServiceTest {
+class ShowDetailServiceTest {
 
     @Mock
     private TvMazeShowPort tvMazeShowPort;

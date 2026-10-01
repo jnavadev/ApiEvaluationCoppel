@@ -2,6 +2,13 @@ package com.test.copamw.infrastructure.adapter.in.rest;
 
 import java.util.List;
 
+import com.test.copamw.application.service.ShowCommentService;
+import com.test.copamw.domain.model.ShowComment;
+
+import com.test.copamw.infrastructure.adapter.out.tmaze.dto.ShowCommentRequest;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import com.test.copamw.application.service.ShowDetailService;
 import com.test.copamw.domain.model.ShowDetail;
 import com.test.copamw.infrastructure.adapter.in.rest.dto.ShowDetailResponseDto;
@@ -31,16 +38,19 @@ public class ShowController {
     private final ShowRespMapper showRespMapper;
     private final ShowDetailService showDetailService;
     private final ShowDetailResponseMapper showDetailResponseMapper;
+    private final ShowCommentService showCommentService;
 
 public ShowController(
             ShowSearchService showSearchService,
             ShowRespMapper showRespMapper,
             ShowDetailService showDetailService,
-            ShowDetailResponseMapper showDetailResponseMapper) {
+            ShowDetailResponseMapper showDetailResponseMapper,
+            ShowCommentService showCommentService) {
         this.showSearchService = showSearchService;
         this.showRespMapper = showRespMapper;
         this.showDetailService = showDetailService;
         this.showDetailResponseMapper = showDetailResponseMapper;
+        this.showCommentService = showCommentService;
     }
 
     /**
@@ -74,6 +84,27 @@ public ShowController(
         ShowDetail showDetail = showDetailService.getShow(showId);
 
         return showDetailResponseMapper.toResponse(showDetail);
+    }
+
+    /**
+     * Saves a comment and rating associated with a TV show.
+     *
+     * @param request request containing the show identifier, comment and rating
+     * @return HTTP status indicating the result of the operation
+     */
+    @PostMapping("/comments")
+    public ResponseEntity<Void> saveComment(
+            @Valid @RequestBody ShowCommentRequest request) {
+
+        ShowComment showComment = new ShowComment(
+                request.showId(),
+                request.comment(),
+                request.rating()
+        );
+
+        showCommentService.saveComment(showComment);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
